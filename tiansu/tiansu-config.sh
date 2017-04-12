@@ -18,7 +18,7 @@ npm uninstall --save-dev clean-css-brunch
 npm uninstall --save-dev javascript-brunch
 npm uninstall --save-dev uglify-js-brunch
 
-npm install --save-dev bootstrap@3.3.7
+npm install --save-dev babel-preset-es2015@6.13.2
 
 npm install --save autoprefixer@6.4.0
 npm install --save babel-brunch@6.0.5
@@ -35,4 +35,4 @@ npm install --save postcss-brunch@0.6.0
 npm install --save sass-brunch
 npm install --save toastr@2.1.2
 npm install --save uglify-js-brunch
-npm install --save-dev babel-preset-es2015@6.13.2
+
