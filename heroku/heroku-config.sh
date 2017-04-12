@@ -1,10 +1,28 @@
 # /bin/bash
+cd ../..
 heroku create --buildpack "https://github.com/HashNuke/heroku-buildpack-elixir.git"
 heroku buildpacks:add https://github.com/gjaldon/heroku-buildpack-phoenix-static.git
-
+cd -
 
 # Fix prod.exs
-sed '16s/.*/url: [scheme: "https", host: "$(heroku info -s | grep web_url | cut -d= -f2)", port: 443], force_ssl: [rewrite_on: [:x_forwarded_proto]],' $(pwd)/config/prod.exs
+cp prod.exs ../../config/prod.exs
+echo "copied prod.exs";
+
+cd ../..
+HEROKUURL=$(heroku info -s | grep web_url | cut -d= -f2 | awk -F '//|/' '{print $2}')
+
+SEDSTRONE=$(sed '9q;d' config/config.exs)
+LOWER=$(echo $SEDSTRONE | awk -F ':|,' '{print $2}')
+
+SEDSTRTWO=$(sed '33q;d' web/web.ex) 
+UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
+
+sed -ie "s|my-application-url|${HEROKUURL}|g" config/prod.exs
+sed -ie "s/my_application/${LOWER}/g" config/prod.exs
+sed -ie "s/MyApplication/${UPPER}/g" config/prod.exs
+cd -
+
+
 
 # Copy Profile
 cp Procfile ../../Procfile
@@ -19,4 +37,3 @@ cd ../../
 
 # Add socket timeout
 sed '8s/.*/transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000/' $(pwd)/web/channels/user_socket.ex
-

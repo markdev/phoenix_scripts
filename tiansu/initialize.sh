@@ -3,7 +3,7 @@
 # initialize git
 cd ../..
 git init
-printf '%s\n%s\n' '# Phoenix_scripts' '/phoenix_scripts' >> .gitignore
+printf '\n%s\n%s\n' '# Phoenix_scripts' '/phoenix_scripts' >> .gitignore
 git add .
 git commit -m "Initial commit"
 cd -
