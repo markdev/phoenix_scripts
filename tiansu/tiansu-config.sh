@@ -3,6 +3,14 @@
 cp brunch-config.js ../../brunch-config.js
 echo "brunch-config.js copied";
 
+cp app.js ../../web/static/js/app.js
+echo "app.js copied";
+
+mkdir ../../web/static/scss
+
+cp app.scss ../../web/static/scss/app.scss
+echo "app.scss copied";
+
 npm uninstall --save-dev babel-brunch
 npm uninstall --save-dev brunch
 npm uninstall --save-dev clean-css-brunch

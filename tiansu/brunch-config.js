@@ -68,9 +68,7 @@ exports.config = {
     enabled: true,
     globals: {
       $: 'jquery',
-      jQuery: 'jquery',
-      skrollr: 'skrollr',
-      stickyHeader: 'sticky-header'
+      jQuery: 'jquery'
     },
     styles: {
       "bootstrap-table": ["dist/bootstrap-table.css"],
