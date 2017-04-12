@@ -13,9 +13,12 @@ echo "app.scss copied";
 
 npm uninstall --save-dev babel-brunch
 npm uninstall --save-dev brunch
+npm uninstall --save-dev css-brunch
 npm uninstall --save-dev clean-css-brunch
 npm uninstall --save-dev javascript-brunch
 npm uninstall --save-dev uglify-js-brunch
+
+npm install --save-dev bootstrap@3.3.7
 
 npm install --save autoprefixer@6.4.0
 npm install --save babel-brunch@6.0.5
