@@ -11,6 +11,9 @@ mkdir ../../web/static/scss
 cp app.scss ../../web/static/scss/app.scss
 echo "app.scss copied";
 
+cp index.html.eex ../../web/templates/page/index.html.eex
+echo "index.html.eex copied";
+
 cp package.json ../../package.json
 echo "package.json copied";
 
