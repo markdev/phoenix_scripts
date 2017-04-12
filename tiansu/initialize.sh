@@ -14,7 +14,7 @@ echo "app.scss copied";
 cp package.json ../../package.json
 echo "package.json copied";
 
-
+cd ../..
 mix ecto.create
 npm install
 mix phoenix.server
