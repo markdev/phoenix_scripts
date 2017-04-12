@@ -22,8 +22,6 @@ sed -ie "s/my_application/${LOWER}/g" config/prod.exs
 sed -ie "s/MyApplication/${UPPER}/g" config/prod.exs
 cd -
 
-
-
 # Copy Profile
 cp Procfile ../../Procfile
 echo "copied Procfile";
@@ -32,8 +30,21 @@ echo "copied Procfile";
 cp elixir_buildpack.config ../../elixir_buildpack.config
 echo "copied elixir_buildpack";
 
-# Go to root directory
-cd ../../
-
 # Add socket timeout
+cd ../../
 sed '8s/.*/transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000/' $(pwd)/web/channels/user_socket.ex
+cd -
+
+# Addon config
+cd ../..
+heroku addons:create heroku-postgresql:hobby-dev
+heroku config:set POOL_SIZE=18
+heroku run "POOL_SIZE=2 mix hello_phoenix.task"
+
+SECRET=$(mix phoenix.gen.secret)
+heroku config:set SECET_KEY_BASE="${SECRET}"
+
+git add . 
+git commit -m "heroku config" 
+git push heroku master
+cd -
