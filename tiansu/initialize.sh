@@ -29,3 +29,4 @@ cd ../..
 mix ecto.create
 npm install
 mix phoenix.server
+cd -
