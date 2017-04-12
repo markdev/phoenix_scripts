@@ -1,5 +1,13 @@
 # /bin/bash
 
+# initialize git
+cd ../..
+git init
+printf '%s\n%s\n' '# Phoenix_scripts' '/phoenix_scripts' >> .gitignore
+git add .
+git commit -m "Initial commit"
+cd -
+
 cp brunch-config.js ../../brunch-config.js
 echo "brunch-config.js copied";
 
