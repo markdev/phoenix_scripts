@@ -33,5 +33,5 @@ cd -
 cd ../..
 mix ecto.create && mix ecto.migrate
 npm install
-mix phoenix.server
+echo "installation complete";
 cd -
