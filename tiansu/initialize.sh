@@ -26,7 +26,12 @@ cp package.json ../../package.json
 echo "package.json copied";
 
 cd ../..
-mix ecto.create
+git add .
+git commit -m "Initial configuration"
+cd -
+
+cd ../..
+mix ecto.create && mix ecto.migrate
 npm install
 mix phoenix.server
 cd -
