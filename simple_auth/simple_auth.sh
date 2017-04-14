@@ -141,102 +141,102 @@ cd ../..
 mix deps.get
 cd -
 
-sed -i '' '24s/$/\
-# Configures Guardian\
-config :guardian, Guardian,\
- issuer: "MyApplication.#{Mix.env}",\
- ttl: {30, :days},\
- verify_issuer: true,\
- serializer: MyApplication.GuardianSerializer,\
- secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"\
-/g' $(pwd)/../../config/config.exs
-sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../config/config.exs
+# sed -i '' '24s/$/\
+# # Configures Guardian\
+# config :guardian, Guardian,\
+#  issuer: "MyApplication.#{Mix.env}",\
+#  ttl: {30, :days},\
+#  verify_issuer: true,\
+#  serializer: MyApplication.GuardianSerializer,\
+#  secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"\
+# /g' $(pwd)/../../config/config.exs
+# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../config/config.exs
 
-mkdir -p $(pwd)/../../web/auth
-cp web/auth/guardian_serializer.ex $(pwd)/../../web/auth/guardian_serializer.ex
-sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/guardian_serializer.ex
+# mkdir -p $(pwd)/../../web/auth
+# cp web/auth/guardian_serializer.ex $(pwd)/../../web/auth/guardian_serializer.ex
+# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/guardian_serializer.ex
 
-# Add Links
-sed -i '' '10s/$/\
-\
-  defp login(conn, user) do\
-    conn\
-    |> Guardian.Plug.sign_in(user)\
-  end\
-/g' $(pwd)/../../web/controllers/session_controller.ex
+# # Add Links
+# sed -i '' '10s/$/\
+# \
+#   defp login(conn, user) do\
+#     conn\
+#     |> Guardian.Plug.sign_in(user)\
+#   end\
+# /g' $(pwd)/../../web/controllers/session_controller.ex
 
-sed -i '' '9s/.*/   # try to get user by unique email from DB\
-    user = Repo.get_by(User, email: email)\
-    # examine the result\
-    result = cond do\
-      # if user was found and provided password hash equals to stored\
-      # hash\
-      user && checkpw(password, user.password_hash) ->\
-        {:ok, login(conn, user)}\
-      # else if we just found the use\
-      user ->\
-        {:error, :unauthorized, conn}\
-      # otherwise\
-      true ->\
-        # simulate check password hash timing\
-        dummy_checkpw\
-        {:error, :not_found, conn}\
-    end\
-    case result do\
-      {:ok, conn} ->\
-        conn\
-        |> put_flash(:info, "You’re now logged in!")\
-        |> redirect(to: page_path(conn, :index))\
-      {:error, _reason, conn} ->\
-        conn\
-        |> put_flash(:error, "Invalid email\/password combination")\
-        |> render("new.html")\
-    end\
-/g' $(pwd)/../../web/controllers/session_controller.ex
+# sed -i '' '9s/.*/   # try to get user by unique email from DB\
+#     user = Repo.get_by(User, email: email)\
+#     # examine the result\
+#     result = cond do\
+#       # if user was found and provided password hash equals to stored\
+#       # hash\
+#       user && checkpw(password, user.password_hash) ->\
+#         {:ok, login(conn, user)}\
+#       # else if we just found the use\
+#       user ->\
+#         {:error, :unauthorized, conn}\
+#       # otherwise\
+#       true ->\
+#         # simulate check password hash timing\
+#         dummy_checkpw\
+#         {:error, :not_found, conn}\
+#     end\
+#     case result do\
+#       {:ok, conn} ->\
+#         conn\
+#         |> put_flash(:info, "You’re now logged in!")\
+#         |> redirect(to: page_path(conn, :index))\
+#       {:error, _reason, conn} ->\
+#         conn\
+#         |> put_flash(:error, "Invalid email\/password combination")\
+#         |> render("new.html")\
+#     end\
+# /g' $(pwd)/../../web/controllers/session_controller.ex
 
-sed -i '' '2s/$/\
-  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]\
-  alias MyApplication.User\
-/g' $(pwd)/../../web/controllers/session_controller.ex
+# sed -i '' '2s/$/\
+#   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]\
+#   alias MyApplication.User\
+# /g' $(pwd)/../../web/controllers/session_controller.ex
 
-sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
+# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
 
-cp web/auth/current_user.ex $(pwd)/../../web/auth/current_user.ex
-sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/current_user.ex
+# cp web/auth/current_user.ex $(pwd)/../../web/auth/current_user.ex
+# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/current_user.ex
 
-sed -i '' '15s/$/\
-  pipeline :with_session do\
-    plug Guardian.Plug.VerifySession\
-    plug Guardian.Plug.LoadResource\
-    plug SimpleAuth.CurrentUser\
-  end\
-/g' $(pwd)/../../web/router.ex
+# sed -i '' '15s/$/\
+#   pipeline :with_session do\
+#     plug Guardian.Plug.VerifySession\
+#     plug Guardian.Plug.LoadResource\
+#     plug SimpleAuth.CurrentUser\
+#   end\
+# /g' $(pwd)/../../web/router.ex
 
-sed -i '' 's/pipe_through :browser/pipe_through [:browser, :with_session]/g' $(pwd)/../../web/router.ex
+# sed -i '' 's/pipe_through :browser/pipe_through [:browser, :with_session]/g' $(pwd)/../../web/router.ex
 
-sed -i '' '49s/$/\
-\
-  defp logout(conn) do\
-    Guardian.Plug.sign_out(conn)\
-  end\
-/g' $(pwd)/../../web/controllers/session_controller.ex
+# sed -i '' '49s/$/\
+# \
+#   defp logout(conn) do\
+#     Guardian.Plug.sign_out(conn)\
+#   end\
+# /g' $(pwd)/../../web/controllers/session_controller.ex
 
-sed -i '' '48s/.*/    conn\
-      |> logout\
-      |> put_flash(:info, "See you later!")\
-      |> redirect(to: page_path(conn, :index))/g' $(pwd)/../../web/controllers/session_controller.ex
+# sed -i '' '48s/.*/    conn\
+#       |> logout\
+#       |> put_flash(:info, "See you later!")\
+#       |> redirect(to: page_path(conn, :index))/g' $(pwd)/../../web/controllers/session_controller.ex
 
-sed -i '' '19,29d' $(pwd)/../../web/templates/layout/app.html.eex 
-sed -i '' '18s/$/\
-            <%= if @current_user do %>\
-              <li><%= @current_user.email %> (<%= @current_user.id %>)<\/li>\
-              <li>\
-                <%= link "Sign out", to: session_path(@conn, :delete,\
-                                                      @current_user),\
-                                     method: "delete" %>\
-              <\/li>\
-            <% else %>\
-              <li><%= link "Register", to: user_path(@conn, :new) %><\/li>\
-              <li><%= link "Sign in", to: session_path(@conn, :new) %><\/li>\
-            <% end %>/g' $(pwd)/../../web/templates/layout/app.html.eex 
+# sed -i '' '19,29d' $(pwd)/../../web/templates/layout/app.html.eex 
+# sed -i '' '18s/$/\
+#             <%= if @current_user do %>\
+#               <li><%= @current_user.email %> (<%= @current_user.id %>)<\/li>\
+#               <li>\
+#                 <%= link "Sign out", to: session_path(@conn, :delete,\
+#                                                       @current_user),\
+#                                      method: "delete" %>\
+#               <\/li>\
+#             <% else %>\
+#               <li><%= link "Register", to: user_path(@conn, :new) %><\/li>\
+#               <li><%= link "Sign in", to: session_path(@conn, :new) %><\/li>\
+#             <% end %>/g' $(pwd)/../../web/templates/layout/app.html.eex 
 
