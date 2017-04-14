@@ -24,7 +24,6 @@ sed -i '' '7s/$/, virtual: true/' $(pwd)/$(find web/models/user.ex)
 sed -i '' '8s/$/\
       has_many :posts, SimpleAuth.Post/' $(pwd)/$(find web/models/user.ex)
 sed -i '' '13s/$/\
-\
 	@required_fields ~w(email)a\
 	@optional_fields ~w(name is_admin)a\
 /' $(pwd)/$(find web/models/user.ex)
@@ -59,8 +58,52 @@ cp web/templates/user/new.html.eex $(pwd)/../../web/templates/user/new.html.eex
 # Add registration link
 sed -i '' "19s|.*|						<%= link \"Register\", to: user_path(@conn, :new) %>|g" $(pwd)/../../web/templates/layout/app.html.eex
 
+# Add comeonin dependency
+sed -i '' "22s|:postgrex|:postgrex, :comeonin|g" $(pwd)/../../mix.exs
+sed -i '' '40s|]$|,\
+     {:comeonin, "~> 2.5"}]|g' $(pwd)/../../mix.exs
+cd ../..
+mix deps.get
+cd -
 
+#Add changeset functions
+sed -i '' '25s/$/\
+\
+  def registration_changeset(struct, params) do\
+    struct\
+    |> changeset(params)\
+    |> cast(params, ~w(password)a, [])\
+    |> validate_length(:password, min: 6, max: 100)\
+    |> hash_password\
+  end\
+\
+  defp hash_password(changeset) do\
+    case changeset do\
+      %Ecto.Changeset{valid?: true,\
+                      changes: %{password: password}} ->\
+        put_change(changeset,\
+                   :password_hash,\
+                   Comeonin.Bcrypt.hashpwsalt(password))\
+      _ ->\
+        changeset\
+    end\
+  end\
+  /g' $(pwd)/../../web/models/user.ex
 
+sed -i '' '13s/.*/		changeset = %User{} |> User.registration_changeset(user_params)\
+\
+		case Repo.insert(changeset) do\
+			{:ok, user} ->\
+				conn\
+				|> put_flash(:info, "#{user.name} created!")\
+				|> redirect(to: user_path(conn, :show, user))\
+			{:error, changeset} ->\
+				render(conn, "new.html", changeset: changeset)\
+		end/g' $(pwd)/../../web/controllers/user_controller.ex
+
+sed -i '' '3s/$/\
+	plug :scrub_params, "user" when action in [:create]\
+/g' $(pwd)/../../web/controllers/user_controller.ex
 
 
 
