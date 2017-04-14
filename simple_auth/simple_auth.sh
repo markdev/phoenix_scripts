@@ -121,6 +121,7 @@ sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_cont
 cp web/views/session_view.ex $(pwd)/../../web/views/session_view.ex
 sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/views/session_view.ex
 
+mkdir -p $(pwd)/../../web/templates/session
 cp web/templates/session/new.html.eex $(pwd)/../../web/templates/session/new.html.eex
 
 # Add Links
