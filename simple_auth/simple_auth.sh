@@ -227,7 +227,7 @@ sed -i '' '48s/.*/    conn\
       |> put_flash(:info, "See you later!")\
       |> redirect(to: page_path(conn, :index))/g' $(pwd)/../../web/controllers/session_controller.ex
 
-sed -i '' '19,29d' $(pwd)/../../web/templates/layout/app.html.eex 
+sed -i '' '19,25d' $(pwd)/../../web/templates/layout/app.html.eex 
 sed -i '' '18s/$/\
             <%= if @current_user do %>\
               <li><%= @current_user.email %> (<%= @current_user.id %>)<\/li>\
