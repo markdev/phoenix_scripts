@@ -134,65 +134,65 @@ sed -i '' '19s/.*/            <li>\
 
 
 #####################
-# Add guardian dependency
-# sed -i '' '41s|]$|,\
-#      {:guardian, "~> 0.12.0"}]|g' $(pwd)/../../mix.exs
-# cd ../..
-# mix deps.get
-# cd -
+Add guardian dependency
+sed -i '' '41s|]$|,\
+     {:guardian, "~> 0.12.0"}]|g' $(pwd)/../../mix.exs
+cd ../..
+mix deps.get
+cd -
 
-# sed -i '' '24s/$/\
-# # Configures Guardian\
-# config :guardian, Guardian,\
-#  issuer: "MyApplication.#{Mix.env}",\
-#  ttl: {30, :days},\
-#  verify_issuer: true,\
-#  serializer: MyApplication.GuardianSerializer,\
-#  secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"\
-# /g' $(pwd)/../../config/config.exs
-# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../config/config.exs
+sed -i '' '24s/$/\
+# Configures Guardian\
+config :guardian, Guardian,\
+ issuer: "MyApplication.#{Mix.env}",\
+ ttl: {30, :days},\
+ verify_issuer: true,\
+ serializer: MyApplication.GuardianSerializer,\
+ secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"\
+/g' $(pwd)/../../config/config.exs
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../config/config.exs
 
-# mkdir -p $(pwd)/../../web/auth
-# cp web/auth/guardian_serializer.ex $(pwd)/../../web/auth/guardian_serializer.ex
-# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/guardian_serializer.ex
+mkdir -p $(pwd)/../../web/auth
+cp web/auth/guardian_serializer.ex $(pwd)/../../web/auth/guardian_serializer.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/guardian_serializer.ex
 
-# # Add Links
-# sed -i '' '10s/$/\
-# \
-#   defp login(conn, user) do\
-#     conn\
-#     |> Guardian.Plug.sign_in(user)\
-#   end\
-# /g' $(pwd)/../../web/controllers/session_controller.ex
+# Add Links
+sed -i '' '10s/$/\
+\
+  defp login(conn, user) do\
+    conn\
+    |> Guardian.Plug.sign_in(user)\
+  end\
+/g' $(pwd)/../../web/controllers/session_controller.ex
 
-# sed -i '' '9s/.*/   # try to get user by unique email from DB\
-#     user = Repo.get_by(User, email: email)\
-#     # examine the result\
-#     result = cond do\
-#       # if user was found and provided password hash equals to stored\
-#       # hash\
-#       user && checkpw(password, user.password_hash) ->\
-#         {:ok, login(conn, user)}\
-#       # else if we just found the use\
-#       user ->\
-#         {:error, :unauthorized, conn}\
-#       # otherwise\
-#       true ->\
-#         # simulate check password hash timing\
-#         dummy_checkpw\
-#         {:error, :not_found, conn}\
-#     end\
-#     case result do\
-#       {:ok, conn} ->\
-#         conn\
-#         |> put_flash(:info, "You’re now logged in!")\
-#         |> redirect(to: page_path(conn, :index))\
-#       {:error, _reason, conn} ->\
-#         conn\
-#         |> put_flash(:error, "Invalid email\/password combination")\
-#         |> render("new.html")\
-#     end\
-# /g' $(pwd)/../../web/controllers/session_controller.ex
+sed -i '' '9s/.*/   # try to get user by unique email from DB\
+    user = Repo.get_by(User, email: email)\
+    # examine the result\
+    result = cond do\
+      # if user was found and provided password hash equals to stored\
+      # hash\
+      user && checkpw(password, user.password_hash) ->\
+        {:ok, login(conn, user)}\
+      # else if we just found the use\
+      user ->\
+        {:error, :unauthorized, conn}\
+      # otherwise\
+      true ->\
+        # simulate check password hash timing\
+        dummy_checkpw\
+        {:error, :not_found, conn}\
+    end\
+    case result do\
+      {:ok, conn} ->\
+        conn\
+        |> put_flash(:info, "You’re now logged in!")\
+        |> redirect(to: page_path(conn, :index))\
+      {:error, _reason, conn} ->\
+        conn\
+        |> put_flash(:error, "Invalid email\/password combination")\
+        |> render("new.html")\
+    end\
+/g' $(pwd)/../../web/controllers/session_controller.ex
 
 # sed -i '' '2s/$/\
 #   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]\
