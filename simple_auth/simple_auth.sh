@@ -68,7 +68,9 @@ cd ../..
 mix deps.get
 cd -
 
-#Add changeset functions
+# Add changeset functions
+sed -i '' '23s/.*/    |> cast(params, @required_fields ++ @optional_fields)/g' $(pwd)/../../web/models/user.ex
+sed -i '' '24s/.*/    |> validate_required(@required_fields)/g' $(pwd)/../../web/models/user.ex
 sed -i '' '25s/$/\
 \
   def registration_changeset(struct, params) do\
