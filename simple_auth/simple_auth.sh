@@ -202,41 +202,41 @@ sed -i '' '2s/$/\
 sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
 
 # cp web/auth/current_user.ex $(pwd)/../../web/auth/current_user.ex
-# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/current_user.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/current_user.ex
 
-# sed -i '' '15s/$/\
-#   pipeline :with_session do\
-#     plug Guardian.Plug.VerifySession\
-#     plug Guardian.Plug.LoadResource\
-#     plug SimpleAuth.CurrentUser\
-#   end\
-# /g' $(pwd)/../../web/router.ex
+sed -i '' '15s/$/\
+  pipeline :with_session do\
+    plug Guardian.Plug.VerifySession\
+    plug Guardian.Plug.LoadResource\
+    plug SimpleAuth.CurrentUser\
+  end\
+/g' $(pwd)/../../web/router.ex
 
-# sed -i '' 's/pipe_through :browser/pipe_through [:browser, :with_session]/g' $(pwd)/../../web/router.ex
+sed -i '' 's/pipe_through :browser/pipe_through [:browser, :with_session]/g' $(pwd)/../../web/router.ex
 
-# sed -i '' '49s/$/\
-# \
-#   defp logout(conn) do\
-#     Guardian.Plug.sign_out(conn)\
-#   end\
-# /g' $(pwd)/../../web/controllers/session_controller.ex
+sed -i '' '49s/$/\
+\
+  defp logout(conn) do\
+    Guardian.Plug.sign_out(conn)\
+  end\
+/g' $(pwd)/../../web/controllers/session_controller.ex
 
-# sed -i '' '48s/.*/    conn\
-#       |> logout\
-#       |> put_flash(:info, "See you later!")\
-#       |> redirect(to: page_path(conn, :index))/g' $(pwd)/../../web/controllers/session_controller.ex
+sed -i '' '48s/.*/    conn\
+      |> logout\
+      |> put_flash(:info, "See you later!")\
+      |> redirect(to: page_path(conn, :index))/g' $(pwd)/../../web/controllers/session_controller.ex
 
-# sed -i '' '19,29d' $(pwd)/../../web/templates/layout/app.html.eex 
-# sed -i '' '18s/$/\
-#             <%= if @current_user do %>\
-#               <li><%= @current_user.email %> (<%= @current_user.id %>)<\/li>\
-#               <li>\
-#                 <%= link "Sign out", to: session_path(@conn, :delete,\
-#                                                       @current_user),\
-#                                      method: "delete" %>\
-#               <\/li>\
-#             <% else %>\
-#               <li><%= link "Register", to: user_path(@conn, :new) %><\/li>\
-#               <li><%= link "Sign in", to: session_path(@conn, :new) %><\/li>\
-#             <% end %>/g' $(pwd)/../../web/templates/layout/app.html.eex 
+sed -i '' '19,29d' $(pwd)/../../web/templates/layout/app.html.eex 
+sed -i '' '18s/$/\
+            <%= if @current_user do %>\
+              <li><%= @current_user.email %> (<%= @current_user.id %>)<\/li>\
+              <li>\
+                <%= link "Sign out", to: session_path(@conn, :delete,\
+                                                      @current_user),\
+                                     method: "delete" %>\
+              <\/li>\
+            <% else %>\
+              <li><%= link "Register", to: user_path(@conn, :new) %><\/li>\
+              <li><%= link "Sign in", to: session_path(@conn, :new) %><\/li>\
+            <% end %>/g' $(pwd)/../../web/templates/layout/app.html.eex 
 
