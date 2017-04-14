@@ -134,12 +134,12 @@ sed -i '' '19s/.*/            <li>\
 
 
 #####################
-Add guardian dependency
-sed -i '' '41s|]$|,\
-     {:guardian, "~> 0.12.0"}]|g' $(pwd)/../../mix.exs
-cd ../..
-mix deps.get
-cd -
+# Add guardian dependency
+# sed -i '' '41s|]$|,\
+#      {:guardian, "~> 0.12.0"}]|g' $(pwd)/../../mix.exs
+# cd ../..
+# mix deps.get
+# cd -
 
 # sed -i '' '24s/$/\
 # # Configures Guardian\
