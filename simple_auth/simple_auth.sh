@@ -23,7 +23,8 @@ mix phoenix.gen.model Post posts title:string body:text user_id:references:users
 sed -i '' '6s/$/\
     field :password, :string, virtual: true/' $(pwd)/$(find web/models/user.ex)
 sed -i '' '9s/$/\
-    has_many :posts, SimpleAuth.Post/' $(pwd)/$(find web/models/user.ex)
+    has_many :posts, MyApplication.Post/' $(pwd)/web/models/user.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/web/models/user.ex
 sed -i '' '14s/$/\
 	@required_fields ~w(email)a\
 	@optional_fields ~w(name is_admin)a\
