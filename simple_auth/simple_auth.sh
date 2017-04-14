@@ -109,8 +109,27 @@ sed -i '' '3s/$/\
 	plug :scrub_params, "user" when action in [:create]\
 /g' $(pwd)/../../web/controllers/user_controller.ex
 
+# Authentication and Sessions
+sed -i '' '21s|$|\
+\
+    resources "/sessions", SessionController, only: [:new, :create, :delete]\
+  |' $(pwd)/../../web/router.ex
 
+cp web/controllers/session_controller.ex $(pwd)/../../web/controllers/session_controller.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/web/controllers/session_controller.ex
 
+cp web/views/session_view.ex $(pwd)/../../web/views/session_view.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/web/views/session_view.ex
+
+cp web/templates/session/new.html.eex $(pwd)/../../web/templates/session/new.html.eex
+
+# Add Links
+sed -i '' '19s/.*/            <li>\
+              <%= link "Register", to: user_path(@conn, :new) %>\
+            <\/li>\
+            <li>\
+              <%= link "Sign in", to: session_path(@conn, :new) %>\
+            <\/li>/g' $(pwd)/../../web/templates/layout/app.html.eex
 
 
 
