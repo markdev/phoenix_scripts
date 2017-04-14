@@ -1,6 +1,6 @@
-defmodule  FizzBuzz.UserController do
-  use  FizzBuzz.Web, :controller
-  alias  FizzBuzz.User
+defmodule MyApplication.UserController do
+  use MyApplication.Web, :controller
+  alias MyApplication.User
   def show(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     render(conn, "show.html", user: user)

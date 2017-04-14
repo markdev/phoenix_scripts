@@ -41,7 +41,7 @@ cd -
 
 # Add user controller
 cp web/controllers/user_controller.ex $(pwd)/../../web/controllers/user_controller.ex
-sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/$(find web/controllers/user_controller.ex)
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/user_controller.ex
 
 # Add routes
 sed -i '' '19s|$|\
