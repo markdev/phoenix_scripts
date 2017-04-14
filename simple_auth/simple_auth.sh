@@ -171,7 +171,7 @@ sed -i '' '9s/.*/   # try to get user by unique email from DB\
     result = cond do\
       # if user was found and provided password hash equals to stored\
       # hash\
-      user && checkpw(password, user.password_hash) ->\
+      user \&\& checkpw(password, user.password_hash) ->\
         {:ok, login(conn, user)}\
       # else if we just found the use\
       user ->\
@@ -194,12 +194,12 @@ sed -i '' '9s/.*/   # try to get user by unique email from DB\
     end\
 /g' $(pwd)/../../web/controllers/session_controller.ex
 
-# sed -i '' '2s/$/\
-#   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]\
-#   alias MyApplication.User\
-# /g' $(pwd)/../../web/controllers/session_controller.ex
+sed -i '' '2s/$/\
+  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]\
+  alias MyApplication.User\
+/g' $(pwd)/../../web/controllers/session_controller.ex
 
-# sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
 
 # cp web/auth/current_user.ex $(pwd)/../../web/auth/current_user.ex
 # sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/current_user.ex
