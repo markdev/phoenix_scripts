@@ -26,8 +26,8 @@ sed -i '' '9s/$/\
     has_many :posts, MyApplication.Post/' $(pwd)/web/models/user.ex
 sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/web/models/user.ex
 sed -i '' '14s/$/\
-	@required_fields ~w(email)a\
-	@optional_fields ~w(name is_admin)a\
+  @required_fields ~w(email)a\
+  @optional_fields ~w(name is_admin)a\
 /' $(pwd)/$(find web/models/user.ex)
 
 # modify post model
@@ -35,8 +35,8 @@ sed -i '' '18s/$/\
     |> assoc_constraint(:user)/' $(pwd)/$(find web/models/post.ex)
 sed -i '' '11s/$/\
 \
-	@required_fields ~w(title)a\
-	@optional_fields ~w(body)a\
+  @required_fields ~w(title)a\
+  @optional_fields ~w(body)a\
 /' $(pwd)/$(find web/models/post.ex)
 cd -
 
@@ -47,7 +47,7 @@ sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/user_control
 # Add routes
 sed -i '' '19s|$|\
 \
-		resources "/users", UserController, only: [:show, :new, :create]\
+    resources "/users", UserController, only: [:show, :new, :create]\
   |' $(pwd)/../../web/router.ex
 
 # Copy partials
@@ -58,7 +58,7 @@ cp web/templates/user/show.html.eex $(pwd)/../../web/templates/user/show.html.ee
 cp web/templates/user/new.html.eex $(pwd)/../../web/templates/user/new.html.eex
 
 # Add registration link
-sed -i '' "19s|.*|						<%= link \"Register\", to: user_path(@conn, :new) %>|g" $(pwd)/../../web/templates/layout/app.html.eex
+sed -i '' "19s|.*|            <%= link \"Register\", to: user_path(@conn, :new) %>|g" $(pwd)/../../web/templates/layout/app.html.eex
 
 # Add comeonin dependency
 sed -i '' "22s|:postgrex|:postgrex, :comeonin|g" $(pwd)/../../mix.exs
@@ -94,19 +94,19 @@ sed -i '' '25s/$/\
   end\
   /g' $(pwd)/../../web/models/user.ex
 
-sed -i '' '13s/.*/		changeset = %User{} |> User.registration_changeset(user_params)\
+sed -i '' '13s/.*/    changeset = %User{} |> User.registration_changeset(user_params)\
 \
-		case Repo.insert(changeset) do\
-			{:ok, user} ->\
-				conn\
-				|> put_flash(:info, "#{user.name} created!")\
-				|> redirect(to: user_path(conn, :show, user))\
-			{:error, changeset} ->\
-				render(conn, "new.html", changeset: changeset)\
-		end/g' $(pwd)/../../web/controllers/user_controller.ex
+    case Repo.insert(changeset) do\
+      {:ok, user} ->\
+        conn\
+        |> put_flash(:info, "#{user.name} created!")\
+        |> redirect(to: user_path(conn, :show, user))\
+      {:error, changeset} ->\
+        render(conn, "new.html", changeset: changeset)\
+    end/g' $(pwd)/../../web/controllers/user_controller.ex
 
 sed -i '' '3s/$/\
-	plug :scrub_params, "user" when action in [:create]\
+  plug :scrub_params, "user" when action in [:create]\
 /g' $(pwd)/../../web/controllers/user_controller.ex
 
 # Authentication and Sessions
@@ -133,4 +133,110 @@ sed -i '' '19s/.*/            <li>\
             <\/li>/g' $(pwd)/../../web/templates/layout/app.html.eex
 
 
+#####################
+Add guardian dependency
+sed -i '' '41s|]$|,\
+     {:guardian, "~> 0.12.0"}]|g' $(pwd)/../../mix.exs
+cd ../..
+mix deps.get
+cd -
+
+sed -i '' '24s/$/\
+# Configures Guardian\
+config :guardian, Guardian,\
+ issuer: "MyApplication.#{Mix.env}",\
+ ttl: {30, :days},\
+ verify_issuer: true,\
+ serializer: MyApplication.GuardianSerializer,\
+ secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"\
+/g' $(pwd)/../../config/config.exs
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../config/config.exs
+
+mkdir -p $(pwd)/../../web/auth
+cp web/auth/guardian_serializer.ex $(pwd)/../../web/auth/guardian_serializer.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/guardian_serializer.ex
+
+# Add Links
+sed -i '' '10s/$/\
+\
+  defp login(conn, user) do\
+    conn\
+    |> Guardian.Plug.sign_in(user)\
+  end\
+/g' $(pwd)/../../web/controllers/session_controller.ex
+
+sed -i '' '9s/.*/   # try to get user by unique email from DB\
+    user = Repo.get_by(User, email: email)\
+    # examine the result\
+    result = cond do\
+      # if user was found and provided password hash equals to stored\
+      # hash\
+      user && checkpw(password, user.password_hash) ->\
+        {:ok, login(conn, user)}\
+      # else if we just found the use\
+      user ->\
+        {:error, :unauthorized, conn}\
+      # otherwise\
+      true ->\
+        # simulate check password hash timing\
+        dummy_checkpw\
+        {:error, :not_found, conn}\
+    end\
+    case result do\
+      {:ok, conn} ->\
+        conn\
+        |> put_flash(:info, "You’re now logged in!")\
+        |> redirect(to: page_path(conn, :index))\
+      {:error, _reason, conn} ->\
+        conn\
+        |> put_flash(:error, "Invalid email\/password combination")\
+        |> render("new.html")\
+    end\
+/g' $(pwd)/../../web/controllers/session_controller.ex
+
+sed -i '' '2s/$/\
+  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]\
+  alias MyApplication.User\
+/g' $(pwd)/../../web/controllers/session_controller.ex
+
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
+
+cp web/auth/current_user.ex $(pwd)/../../web/auth/current_user.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/current_user.ex
+
+sed -i '' '15s/$/\
+  pipeline :with_session do\
+    plug Guardian.Plug.VerifySession\
+    plug Guardian.Plug.LoadResource\
+    plug SimpleAuth.CurrentUser\
+  end\
+/g' $(pwd)/../../web/router.ex
+
+sed -i '' 's/pipe_through :browser/pipe_through [:browser, :with_session]/g' $(pwd)/../../web/router.ex
+
+sed -i '' '49s/$/\
+\
+  defp logout(conn) do\
+    Guardian.Plug.sign_out(conn)\
+  end\
+/g' $(pwd)/../../web/controllers/session_controller.ex
+
+sed -i '' '48s/.*/    conn\
+      |> logout\
+      |> put_flash(:info, "See you later!")\
+      |> redirect(to: page_path(conn, :index))/g' $(pwd)/../../web/controllers/session_controller.ex
+
+sed -i '' '19,29d' $(pwd)/../../web/templates/layout/app.html.eex 
+sed -i '' '18s/$/\
+            <%= if @current_user do %>\
+              <li><%= @current_user.email %> (<%= @current_user.id %>)<\/li>\
+              <li>\
+                <%= link "Sign out", to: session_path(@conn, :delete,\
+                                                      @current_user),\
+                                     method: "delete" %>\
+              <\/li>\
+            <% else %>\
+              <li><%= link "Register", to: user_path(@conn, :new) %><\/li>\
+              <li><%= link "Sign in", to: session_path(@conn, :new) %><\/li>\
+            <% end %>/g' $(pwd)/../../web/templates/layout/app.html.eex 
 
