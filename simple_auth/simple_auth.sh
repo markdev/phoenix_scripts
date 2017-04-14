@@ -20,10 +20,11 @@ sed -i '' '12s/$/\
 mix phoenix.gen.model Post posts title:string body:text user_id:references:users
 
 # modify user model
-sed -i '' '7s/$/, virtual: true/' $(pwd)/$(find web/models/user.ex)
-sed -i '' '8s/$/\
-      has_many :posts, SimpleAuth.Post/' $(pwd)/$(find web/models/user.ex)
-sed -i '' '13s/$/\
+sed -i '' '6s/$/\
+    field :password, :string, virtual: true/' $(pwd)/$(find web/models/user.ex)
+sed -i '' '9s/$/\
+    has_many :posts, SimpleAuth.Post/' $(pwd)/$(find web/models/user.ex)
+sed -i '' '14s/$/\
 	@required_fields ~w(email)a\
 	@optional_fields ~w(name is_admin)a\
 /' $(pwd)/$(find web/models/user.ex)
