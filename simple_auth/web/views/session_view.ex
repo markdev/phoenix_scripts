@@ -1,3 +1,3 @@
-defmodule MyApplication.SessionView do
-  use MyApplication.Web, :view
+defmodule  DeltaJewel.SessionView do
+  use  DeltaJewel.Web, :view
 end

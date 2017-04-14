@@ -116,10 +116,10 @@ sed -i '' '21s|$|\
   |' $(pwd)/../../web/router.ex
 
 cp web/controllers/session_controller.ex $(pwd)/../../web/controllers/session_controller.ex
-sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/web/controllers/session_controller.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
 
 cp web/views/session_view.ex $(pwd)/../../web/views/session_view.ex
-sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/web/views/session_view.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/views/session_view.ex
 
 cp web/templates/session/new.html.eex $(pwd)/../../web/templates/session/new.html.eex
 
