@@ -201,16 +201,17 @@ sed -i '' '2s/$/\
 
 sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/controllers/session_controller.ex
 
-# cp web/auth/current_user.ex $(pwd)/../../web/auth/current_user.ex
+cp web/auth/current_user.ex $(pwd)/../../web/auth/current_user.ex
 sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/auth/current_user.ex
 
 sed -i '' '15s/$/\
   pipeline :with_session do\
     plug Guardian.Plug.VerifySession\
     plug Guardian.Plug.LoadResource\
-    plug SimpleAuth.CurrentUser\
+    plug MyApplication.CurrentUser\
   end\
 /g' $(pwd)/../../web/router.ex
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../web/router.ex
 
 sed -i '' 's/pipe_through :browser/pipe_through [:browser, :with_session]/g' $(pwd)/../../web/router.ex
 
