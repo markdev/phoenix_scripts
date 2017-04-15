@@ -7,6 +7,96 @@ SEDSTRTWO=$(sed '33q;d' web/web.ex)
 UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
 cd -
 
+# Battle plan
+# 1. Migrations (user and post)
+# 2. mix.exs Dependencies (comeonin and guardian)
+# 3. config
+# 4. seeds
+# 5. routes
+# 6. mkdir -p web/files
+# 6b. cp web/files
+# 6a. sed web/files
+
+# 7. migrate
+# 8. mix deps.get
+# 9. seed
+# 10. mix phoenix.server
+
+
+
+
+
+
+
+
+# mix phoenix.new simple_auth
+# mix ecto.create
+# mix phoenix.gen.model User users email:string name:string password_hash:string is_admin:boolean
+# mix phoenix.gen.model Post posts title:string body:text user_id:references:users
+# (2 migrations)
+# mix ecto.migrate
+# mix.exs (add comeonin, mix dips.get)
+# mix.exs (add guardian, mix dips.get)
+
+# config/config.exs
+
+# priv/repo/seeds.exs (mix run priv/repo/seeds.exs)
+
+# web/auth/auth.ex
+# web/auth/current_user.ex
+# web/auth/guardian_serializer.ex
+# web/auth/guardian_error_handler.ex
+# web/auth/check_admin.ex
+
+# web/controllers/post_controller.ex
+# web/controllers/session_controller.ex
+# web/controllers/user_controller.ex
+# web/controllers/post_controller.ex
+# web/controllers/admin/user_controller.ex
+
+# web/models/user.ex
+# web/models/post.ex
+
+# web/router.ex
+
+# web/templates/admin/user/index.html.eex
+# web/templates/admin/user/show.html.eex
+# web/templates/layout/app.html.eex
+# web/templates/post/index.html.eex
+# web/templates/post/show.html.eex
+# web/templates/post/new.html.eex
+# web/templates/post/edit.html.eex
+# web/templates/session/new.html.eex
+# web/templates/user/show.html.eex
+# web/templates/user/new.html.eex
+
+
+
+# web/views/post_view.ex
+# web/views/session_view.ex
+# web/views/user_view.ex
+# web/views/admin/user_view.ex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # # Create the user model
 # cd ../..
 # mix phoenix.gen.model User users email:string name:string password_hash:string is_admin:boolean
