@@ -37,6 +37,7 @@ echo "Completed -- 2: Dependencies";
 # 3. config
 # Add config/config.exs
 cp config/config.exs $(pwd)/../../config/config.exs
+sed -i '' "s|my_application|${LOWER}|g" $(pwd)/../../config/config.exs
 sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../config/config.exs
 echo "Completed -- 3: config";
 
@@ -59,9 +60,15 @@ for f in $(find web | awk '/.eex/ || /.ex/');
 perl -pi -e "s/MyApplication/${UPPER}/g" `find ../../web -name "*.ex" -or -name "*.eex"`
 echo "Completed -- 5: mv web files";
 
-# 6. migrate
-# 7. mix deps.get
+# 6. mix deps.get
+mix deps.get
+
+# 7. migrate
+mix phoenix.migrate
+
 # 8. seed
+
+
 # 9. mix phoenix.server
 
 

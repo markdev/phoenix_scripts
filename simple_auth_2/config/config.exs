@@ -6,11 +6,11 @@
 use Mix.Config
 
 # General application configuration
-config :simple_auth,
+config :my_application,
   ecto_repos: [MyApplication.Repo]
 
 # Configures the endpoint
-config :simple_auth, MyApplication.Endpoint,
+config :my_application, MyApplication.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "yAz5RhEjmtbvahJzAg3qhBb3U1qQBUXmTpsTIrDO5EPQffTvZgMLHmIRCRv47rnj",
   render_errors: [view: MyApplication.ErrorView, accepts: ~w(html json)],
