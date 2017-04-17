@@ -43,6 +43,20 @@ sed -i '' "s|my-application-url|${HEROKUURL}|g" config/prod.exs
 sed -i '' "s/my_application/${LOWER}/g" config/prod.exs
 sed -i '' "s/MyApplication/${UPPER}/g" config/prod.exs
 
+heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
+heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
+heroku addons:create heroku-postgresql
+
+SECRETLINE=$(sed '12q;d' config/prod.secret.exs)
+THESECRET=$(echo $SECRETLINE | awk -F '"|"' '{print $2}')
+heroku config:set SECRET_KEY_BASE="${THESECRET}"
+
+
+
+
+
+
+
 
 
 # mix ecto.create
