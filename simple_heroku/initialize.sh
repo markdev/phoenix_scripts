@@ -54,6 +54,11 @@ heroku config:set SECRET_KEY_BASE="${THESECRET}"
 git add . && git commit -m "Adds heoku config"
 git push heroku master
 
+heroku run mix ecto.create
+echo "IGNORE THE RED ERROR MESSAGE ABOVE";
+heroku run mix ecto.migrate
+heroku open
+
 
 
 
