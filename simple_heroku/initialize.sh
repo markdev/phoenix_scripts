@@ -36,9 +36,12 @@ LOWER=$(echo $SEDSTRONE | awk -F ':|,' '{print $2}')
 SEDSTRTWO=$(sed '33q;d' web/web.ex) 
 UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
 
+cp phoenix_scripts/simple_heroku/config/prod.exs config/prod.exs
+echo "copied prod.exs";
 
-
-
+sed -i '' "s|my-application-url|${HEROKUURL}|g" config/prod.exs
+sed -i '' "s/my_application/${LOWER}/g" config/prod.exs
+sed -i '' "s/MyApplication/${UPPER}/g" config/prod.exs
 
 
 
