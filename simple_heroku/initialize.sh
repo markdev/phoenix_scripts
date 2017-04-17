@@ -53,20 +53,20 @@ cd -
 
 
 
-heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
-heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
+# heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
+# heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
 
-heroku addons:create heroku-postgresql
+# heroku addons:create heroku-postgresql
 
-SECRET=$(mix phoenix.gen.secret)
-heroku config:set SECET_KEY_BASE="${SECRET}"
+# SECRET=$(mix phoenix.gen.secret)
+# heroku config:set SECET_KEY_BASE="${SECRET}"
 
-git add . 
-git commit -m "heroku config" 
-git push heroku master
-cd -
+# git add . 
+# git commit -m "heroku config" 
+# git push heroku master
+# cd -
 
-git push heroku master
-heroku run mix ecto.create
-heroku run mix ecto.migrate
-heroku open
+# git push heroku master
+# heroku run mix ecto.create
+# heroku run mix ecto.migrate
+# heroku open
