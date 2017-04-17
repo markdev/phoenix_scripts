@@ -61,7 +61,7 @@ perl -pi -e "s/MyApplication/${UPPER}/g" `find ../../web -name "*.ex" -or -name 
 echo "Completed -- 5: mv web files";
 
 # 6. mix deps.get
-#mix deps.get
+mix deps.get
 
 # 7. migrate
 #mix phoenix.migrate
