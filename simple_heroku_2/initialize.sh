@@ -35,9 +35,22 @@ sed -i '' "s|my-application-url|${HEROKUURL}|g" config/prod.exs
 sed -i '' "s/my_application/${LOWER}/g" config/prod.exs
 sed -i '' "s/MyApplication/${UPPER}/g" config/prod.exs
 
+
+cp phoenix_scripts/simple_heroku_2/Procfile ./Procfile
+echo "copied Procfile";
+cp phoenix_scripts/simple_heroku_2/elixir_buildpack.config ./elixir_buildpack.config
+echo "copied elixir_buildpack";
+sed -i '' '8s/.*/transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000/' $(pwd)/web/channels/user_socket.ex
+echo "added websocket timeout";
+
+
 heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
 heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
 heroku addons:create heroku-postgresql
+# heroku addons:create heroku-postgresql:hobby-dev
+# heroku config:set POOL_SIZE=18
+# heroku run "POOL_SIZE=2 mix hello_phoenix.task"
+
 
 SECRETLINE=$(sed '12q;d' config/prod.secret.exs)
 THESECRET=$(echo $SECRETLINE | awk -F '"|"' '{print $2}')
