@@ -26,29 +26,73 @@ git add . && git commit -m "Add Users resource to browser scope"
 
 mix ecto.create
 mix ecto.migrate
-
-
-cd -
-
-cp config/prod.exs ../../config/prod.exs
-echo "copied prod.exs";
-
-cd ../..
+mix ecto.migrate
 
 heroku create
+git remote -v
 
-HEROKUURL=$(heroku info -s | grep web_url | cut -d= -f2 | awk -F '//|/' '{print $2}')
+heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
+heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
+heroku addons:create heroku-postgresql
 
-SEDSTRONE=$(sed '9q;d' config/config.exs)
-LOWER=$(echo $SEDSTRONE | awk -F ':|,' '{print $2}')
+SECRET=$(mix phoenix.gen.secret)
+heroku config:set SECET_KEY_BASE="${SECRET}"
 
-SEDSTRTWO=$(sed '33q;d' web/web.ex) 
-UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
+git push heroku master
 
-sed -i '' "s|my-application-url|${HEROKUURL}|g" config/prod.exs
-sed -i '' "s/my_application/${LOWER}/g" config/prod.exs
-sed -i '' "s/MyApplication/${UPPER}/g" config/prod.exs
-cd -
+git add .
+git commit -m "floof"
+heroku create
+heroku addons:create heroku-postgresql
+git push heroku master
+heroku run mix ecto.create
+
+git add .
+git commit -m "config"
+git push heroku master
+
+heroku run mix ecto.create
+heroku run mix ecto.migrate
+heroku open
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# mix ecto.create
+# mix ecto.migrate
+
+
+# cd -
+
+# cp config/prod.exs ../../config/prod.exs
+# echo "copied prod.exs";
+
+# cd ../..
+
+# heroku create
+
+# HEROKUURL=$(heroku info -s | grep web_url | cut -d= -f2 | awk -F '//|/' '{print $2}')
+
+# SEDSTRONE=$(sed '9q;d' config/config.exs)
+# LOWER=$(echo $SEDSTRONE | awk -F ':|,' '{print $2}')
+
+# SEDSTRTWO=$(sed '33q;d' web/web.ex) 
+# UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
+
+# sed -i '' "s|my-application-url|${HEROKUURL}|g" config/prod.exs
+# sed -i '' "s/my_application/${LOWER}/g" config/prod.exs
+# sed -i '' "s/MyApplication/${UPPER}/g" config/prod.exs
+# cd -
 
 
 
