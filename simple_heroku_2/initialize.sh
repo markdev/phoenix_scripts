@@ -2,7 +2,7 @@
 
 echo "Initializing simple heroku 2";
 
-# cd ../..
+cd ../..
 # git init && git add . && git commit -m "Initial commit of Phoenix app"
 
 curl http://www.apache.org/licenses/LICENSE-2.0.txt > LICENSE
