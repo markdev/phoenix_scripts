@@ -45,7 +45,28 @@ LOWER=$(echo $SEDSTRONE | awk -F ':|,' '{print $2}')
 SEDSTRTWO=$(sed '33q;d' web/web.ex) 
 UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
 
-sed -ie "s|my-application-url|${HEROKUURL}|g" config/prod.exs
-sed -ie "s/my_application/${LOWER}/g" config/prod.exs
-sed -ie "s/MyApplication/${UPPER}/g" config/prod.exs
+sed -i '' "s|my-application-url|${HEROKUURL}|g" config/prod.exs
+sed -i '' "s/my_application/${LOWER}/g" config/prod.exs
+sed -i '' "s/MyApplication/${UPPER}/g" config/prod.exs
 cd -
+
+
+
+
+heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
+heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
+
+heroku addons:create heroku-postgresql
+
+SECRET=$(mix phoenix.gen.secret)
+heroku config:set SECET_KEY_BASE="${SECRET}"
+
+git add . 
+git commit -m "heroku config" 
+git push heroku master
+cd -
+
+git push heroku master
+heroku run mix ecto.create
+heroku run mix ecto.migrate
+heroku open
