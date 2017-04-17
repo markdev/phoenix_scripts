@@ -27,12 +27,16 @@ git add . && git commit -m "Add Users resource to browser scope"
 mix ecto.create
 mix ecto.migrate
 
-#cp $(pwd)/phoenix_scripts/simple_heroku/config/prod.exs config/prod.exs
+
 cd -
+
 cp config/prod.exs ../../config/prod.exs
 echo "copied prod.exs";
 
 cd ../..
+
+heroku create
+
 HEROKUURL=$(heroku info -s | grep web_url | cut -d= -f2 | awk -F '//|/' '{print $2}')
 
 SEDSTRONE=$(sed '9q;d' config/config.exs)
