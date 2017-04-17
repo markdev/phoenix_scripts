@@ -51,7 +51,8 @@ SECRETLINE=$(sed '12q;d' config/prod.secret.exs)
 THESECRET=$(echo $SECRETLINE | awk -F '"|"' '{print $2}')
 heroku config:set SECRET_KEY_BASE="${THESECRET}"
 
-
+git add . && git commit -m "Adds heoku config"
+git push heroku master
 
 
 
