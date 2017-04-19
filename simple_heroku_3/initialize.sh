@@ -3,6 +3,7 @@
 echo "Initializing simple heroku 2";
 
 cd ../..
+printf '\n%s\n%s\n' '# Phoenix_scripts' '/phoenix_scripts' >> .gitignore
 git init && git add . && git commit -m "Initial commit of Phoenix app"
 
 curl http://www.apache.org/licenses/LICENSE-2.0.txt > LICENSE
@@ -13,6 +14,20 @@ cd -
 ###### Tiansu config
 cp package.json ../../package.json
 echo "package.json copied";
+
+cp brunch-config.js ../../brunch-config.js
+echo "brunch-config.js copied";
+
+cp app.js ../../web/static/js/app.js
+echo "app.js copied";
+
+mkdir ../../web/static/scss
+
+cp app.scss ../../web/static/scss/app.scss
+echo "app.scss copied";
+
+cp index.html.eex ../../web/templates/page/index.html.eex
+echo "index.html.eex copied";
 
 cd ../..
 npm install
