@@ -47,6 +47,7 @@ echo "added websocket timeout";
 heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
 heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
 heroku addons:create heroku-postgresql
+echo "added heroku buildpacks and addons";
 # heroku addons:create heroku-postgresql:hobby-dev
 # heroku config:set POOL_SIZE=18
 # heroku run "POOL_SIZE=2 mix hello_phoenix.task"
@@ -55,6 +56,7 @@ heroku addons:create heroku-postgresql
 SECRETLINE=$(sed '12q;d' config/prod.secret.exs)
 THESECRET=$(echo $SECRETLINE | awk -F '"|"' '{print $2}')
 heroku config:set SECRET_KEY_BASE="${THESECRET}"
+echo "added secretlines";
 
 git add . && git commit -m "Adds heoku config"
 git push heroku master
