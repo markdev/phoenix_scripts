@@ -3,18 +3,18 @@
 echo "Initializing simple heroku 2";
 
 cd ../..
-# git init && git add . && git commit -m "Initial commit of Phoenix app"
+git init && git add . && git commit -m "Initial commit of Phoenix app"
 
 curl http://www.apache.org/licenses/LICENSE-2.0.txt > LICENSE
 git add LICENSE && git commit -m "Add Apache License 2.0"
 
-# mix phoenix.gen.html User users name:string email:string
-# git add . && git commit -m "Add generated User model"
+mix phoenix.gen.html User users name:string email:string
+git add . && git commit -m "Add generated User model"
 
-# sed -i '' '19s|$|\
-# \
-# 		resources "/users", UserController|g' $(pwd)/web/router.ex
-# git add . && git commit -m "Add Users resource to browser scope"
+sed -i '' '19s|$|\
+\
+		resources "/users", UserController|g' $(pwd)/web/router.ex
+git add . && git commit -m "Add Users resource to browser scope"
 
 mix ecto.create
 mix ecto.migrate
