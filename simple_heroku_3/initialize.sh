@@ -35,6 +35,19 @@ cd -
 ######
 
 
+
+
+
+######## Simple Auth
+cd ../..
+SEDSTRONE=$(sed '9q;d' config/config.exs)
+LOWER=$(echo $SEDSTRONE | awk -F ':|,' '{print $2}')
+
+SEDSTRTWO=$(sed '33q;d' web/web.ex) 
+UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
+cd -
+
+
 cd ../..
 ########  This is the original
 mix phoenix.gen.html User users name:string email:string
@@ -44,7 +57,7 @@ sed -i '' '19s|$|\
 \
 		resources "/users", UserController|g' $(pwd)/web/router.ex
 git add . && git commit -m "Add Users resource to browser scope"
-
+cd -
 ######## Simple Auth 2
 # mix phoenix.gen.html User users email:string name:string password_hash:string is_admin:boolean
 # # add null: false
