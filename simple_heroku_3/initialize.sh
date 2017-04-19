@@ -48,25 +48,20 @@ UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
 cd -
 
 
+# Battle plan
+# 1. Migrations (user and post)
+# Create the user model
 cd ../..
-########  This is the original
-mix phoenix.gen.html User users name:string email:string
-git add . && git commit -m "Add generated User model"
-
-sed -i '' '19s|$|\
-\
-		resources "/users", UserController|g' $(pwd)/web/router.ex
-git add . && git commit -m "Add Users resource to browser scope"
+mix phoenix.gen.model User users email:string name:string password_hash:string is_admin:boolean
+# add null: false
+sed -i '' '6s/$/, null: false/' $(pwd)/$(find priv/repo/migrations/ -name "*create_user*")
+# add create unique_index
+sed -i '' '12s/$/\
+      create unique_index(:users, [:email])/' $(pwd)/$(find priv/repo/migrations/ -name "*create_user*")
+mix phoenix.gen.model Post posts title:string body:text user_id:references:users
 cd -
-######## Simple Auth 2
-# mix phoenix.gen.html User users email:string name:string password_hash:string is_admin:boolean
-# # add null: false
-# sed -i '' '6s/$/, null: false/' $(pwd)/$(find priv/repo/migrations/ -name "*create_user*")
-# # add create unique_index
-# sed -i '' '12s/$/\
-#       create unique_index(:users, [:email])/' $(pwd)/$(find priv/repo/migrations/ -name "*create_user*")
-# mix phoenix.gen.html Post posts title:string body:text user_id:references:users
-# echo "Completed -- 1: Migrations";
+echo "Completed -- 1: Migrations";
+
 
 # 2. mix.exs Dependencies (comeonin and guardian)
 # Add comeonin dependency
@@ -79,11 +74,39 @@ sed -i '' '41s|]$|,\
 echo "Completed -- 2: Dependencies";
 
 
+# 3. config
+# Add config/config.exs
+cp config/config.exs $(pwd)/../../config/config.exs
+sed -i '' "s|my_application|${LOWER}|g" $(pwd)/../../config/config.exs
+sed -i '' "s|MyApplication|${UPPER}|g" $(pwd)/../../config/config.exs
+echo "Completed -- 3: config";
+
+# 4. seeds
+echo "TODO: -- 4: seeds";
+
+# 5. mkdir -p web/files
+for f in $(find web | awk '!/.eex/ && !/.ex/'); 
+	do 
+		mkdir -p "../../"${f}; 
+	done
+
+# 5b. cp web/files
+for f in $(find web | awk '/.eex/ || /.ex/'); 
+	do 
+		cp ${f} "../../"${f}; 
+	done
+
+# 5a. sed web/files
+perl -pi -e "s/MyApplication/${UPPER}/g" `find ../../web -name "*.ex" -or -name "*.eex"`
+echo "Completed -- 5: mv web files";
+
+
 
 
 
 
 cd ../..
+mix deps.get
 mix ecto.create
 mix ecto.migrate
 
