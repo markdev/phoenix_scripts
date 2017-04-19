@@ -83,7 +83,7 @@ echo "Completed -- 2: Dependencies";
 
 
 
-
+cd ../..
 mix ecto.create
 mix ecto.migrate
 
