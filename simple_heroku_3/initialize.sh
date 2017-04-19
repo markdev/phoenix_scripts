@@ -36,13 +36,25 @@ cd -
 
 
 cd ../..
-mix phoenix.gen.html User users name:string email:string
-git add . && git commit -m "Add generated User model"
+########  This is the original
+# mix phoenix.gen.html User users name:string email:string
+# git add . && git commit -m "Add generated User model"
 
-sed -i '' '19s|$|\
-\
-		resources "/users", UserController|g' $(pwd)/web/router.ex
-git add . && git commit -m "Add Users resource to browser scope"
+# sed -i '' '19s|$|\
+# \
+# 		resources "/users", UserController|g' $(pwd)/web/router.ex
+# git add . && git commit -m "Add Users resource to browser scope"
+
+######## Simple Auth 2
+mix phoenix.gen.html User users email:string name:string password_hash:string is_admin:boolean
+# add null: false
+sed -i '' '6s/$/, null: false/' $(pwd)/$(find priv/repo/migrations/ -name "*create_user*")
+# add create unique_index
+sed -i '' '12s/$/\
+      create unique_index(:users, [:email])/' $(pwd)/$(find priv/repo/migrations/ -name "*create_user*")
+mix phoenix.gen.model Post posts title:string body:text user_id:references:users
+cd -
+echo "Completed -- 1: Migrations";
 
 mix ecto.create
 mix ecto.migrate
