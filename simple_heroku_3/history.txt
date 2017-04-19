@@ -1,0 +1,43 @@
+ 1194  ll
+ 1195  mix phoenix.new my_app
+ 1196  cd my_app/
+ 1197  git init && git add . && git commit -m "Initial commit of Phoenix app"
+ 1198  curl http://www.apache.org/licenses/LICENSE-2.0.txt > LICENSE
+ 1199  git add LICENSE && git commit -m "Add Apache License 2.0"
+ 1200  mix phoenix.gen.html User users name:string email:string
+ 1201  git add . && git commit -m "Add generated User model"
+ 1202  subl .
+ 1203  git add . && git commit -m "Add Users resource to browser scope"
+ 1204  mix ecto.create
+ 1205  mix ecto.migrate
+ 1206  mix ecto.migrate
+ 1207  mix phoenix.server
+ 1208  git add . && git commit -m "Update production configuration"
+ 1209  heroku create
+ 1210  git remote -v
+ 1211  heroku buildpacks:add https://github.com/HashNuke/heroku-buildpack-elixir
+ 1212  heroku buildpacks:add https://github.com/gjaldon/phoenix-static-buildpack
+ 1213  heroku addons:create heroku-postgresql
+ 1214  heroku config:set SECRET_KEY_BASE=t3kPqywUWLaF29sU1nChUDWI+Dt5twv/j0m8rc/qepmPP+TK2ygCSwYCyU+zzW00
+ 1215  git push heroku master
+ 1216  subl ../rick_tea/config/prod.exs 
+ 1217  gl
+ 1218  gs
+ 1219  ga .
+ 1220  gcm "more prod update"
+ 1221  heroku create
+ 1222  heroku addons:create heroku-postgresql
+ 1223  git push heroku master
+ 1224  heroku run mix ecto.create
+ 1225  gs
+ 1226  ga .
+ 1227  gcm "config"
+ 1228  git push heroku master
+ 1229  heroku run mix ecto.create
+ 1230  heroku run mix ecto.migrate
+ 1231  heroku open
+ 1232  heroku open
+ 1233  history
+ 1234  ll
+ 1235  git clone git@github.com:markdev/phoenix_scripts.git
+ 1236  history > phoenix_scripts/simple_heroku/history.txt
