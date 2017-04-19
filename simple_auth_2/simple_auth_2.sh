@@ -60,16 +60,18 @@ for f in $(find web | awk '/.eex/ || /.ex/');
 perl -pi -e "s/MyApplication/${UPPER}/g" `find ../../web -name "*.ex" -or -name "*.eex"`
 echo "Completed -- 5: mv web files";
 
+cd ../..
+
 # 6. mix deps.get
 mix deps.get
 
 # 7. migrate
-#mix phoenix.migrate
+mix ecto.migrate
 
 # 8. seed
 
-
 # 9. mix phoenix.server
+mix phoenix.server
 
 
 
