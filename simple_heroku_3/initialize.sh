@@ -53,8 +53,9 @@ sed -i '' '6s/$/, null: false/' $(pwd)/$(find priv/repo/migrations/ -name "*crea
 sed -i '' '12s/$/\
       create unique_index(:users, [:email])/' $(pwd)/$(find priv/repo/migrations/ -name "*create_user*")
 mix phoenix.gen.model Post posts title:string body:text user_id:references:users
-cd -
 echo "Completed -- 1: Migrations";
+
+
 
 mix ecto.create
 mix ecto.migrate
