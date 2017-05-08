@@ -5,13 +5,13 @@ cd ../..
 
 
 # JUST FOR TESTING
-mix phoenix.gen.html User users name:string email:string
-git add . && git commit -m "Add generated User model"
+# mix phoenix.gen.html User users name:string email:string
+# git add . && git commit -m "Add generated User model"
 
-sed -i '' '19s|$|\
-\
-		resources "/users", UserController|g' $(pwd)/web/router.ex
-git add . && git commit -m "Add Users resource to browser scope"
+# sed -i '' '19s|$|\
+# \
+# 		resources "/users", UserController|g' $(pwd)/web/router.ex
+# git add . && git commit -m "Add Users resource to browser scope"
 #
 
 
@@ -36,7 +36,7 @@ echo "copied prod.exs";
 sed -i '' "s/my_application/${LOWER}/g" config/prod.exs
 sed -i '' "s/MyApplication/${UPPER}/g" config/prod.exs
 
-touch "$MYDIR"/phoenix_scripts/herokufy/Procfile
+touch "$MYDIR"/Procfile
 echo "created Procfile";
 
 cp "$MYDIR"/phoenix_scripts/herokufy/elixir_buildpack.config ./elixir_buildpack.config
@@ -48,8 +48,6 @@ echo "added websocket timeout";
 SECRETLINE=$(sed '12q;d' config/prod.secret.exs)
 THESECRET=$(echo $SECRETLINE | awk -F '"|"' '{print $2}')
 echo "$THESECRET"
-heroku config:set SECRET_KEY_BASE="${THESECRET}"
-echo "added secretlines";
 
 IFS=',' read -ra ADDR <<< "$branchstring"
 for i in "${ADDR[@]}"; do
@@ -63,15 +61,17 @@ for i in "${ADDR[@]}"; do
 	heroku buildpacks:add --app "$APP" https://github.com/gjaldon/phoenix-static-buildpack
 	heroku addons:create --app "$APP" heroku-postgresql
 
+	heroku config:set --app "$APP" SECRET_KEY_BASE="${THESECRET}"
+
+	echo "" >> "$MYDIR"/Procfile
+	echo "# Procfile for $i" >> "$MYDIR"/Procfile
+	echo "web: MIX_ENV=$i mix phoenix.server" >> "$MYDIR"/Procfile
+
 	git add . && git commit -m "Adds heroku config"
 	git push "$i" master
 
 	heroku run --app "$APP" mix ecto.create
 	heroku run --app "$APP" mix ecto.migrate
-
-	echo "" >> "$MYDIR"/Procfile
-	echo "# Procfile for $i" >> "$MYDIR"/Procfile
-	echo "web: MIX_ENV=$i mix phoenix.server" >> "$MYDIR"/Procfile
 done
 
 
