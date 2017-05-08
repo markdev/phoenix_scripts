@@ -61,11 +61,11 @@ for i in "${ADDR[@]}"; do
 	heroku buildpacks:add --app "$APP" https://github.com/gjaldon/phoenix-static-buildpack
 	heroku addons:create --app "$APP" heroku-postgresql
 
-	heroku config:set --app "$APP" SECRET_KEY_BASE="${THESECRET}"
+	heroku config:set --app "$APP" SECRET_KEY_BASE="\"${THESECRET}\""
 
-	echo "" >> "$MYDIR"/Procfile
-	echo "# Procfile for $i" >> "$MYDIR"/Procfile
-	echo "web: MIX_ENV=$i mix phoenix.server" >> "$MYDIR"/Procfile
+	# echo "" >> "$MYDIR"/Procfile
+	# echo "# Procfile for $i" >> "$MYDIR"/Procfile
+	# echo "web: MIX_ENV=$i mix phoenix.server" >> "$MYDIR"/Procfile
 
 	git add . && git commit -m "Adds heroku config"
 	git push "$i" master
