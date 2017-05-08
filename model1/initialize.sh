@@ -26,8 +26,16 @@ cp "$PSCRIPTPATH"/index.html.eex "$MYDIR"/web/templates/page/index.html.eex
 cp "$PSCRIPTPATH"/package.json "$MYDIR"/package.json
 cd "$MYDIR" && git add . && git commit -m "Adds Tiansu front-end configuration"
 
+# In here shall go the mix deps.get dependency
+# https://stackoverflow.com/questions/38972736/how-to-select-lines-between-two-patterns
+
 # Installations
 mix ecto.create
 mix ecto.migrate
 npm install
 
+# Here shall go the users and user auth
+
+# email
+
+# avatar/ex_aws
