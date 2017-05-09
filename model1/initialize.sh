@@ -33,6 +33,7 @@ cp "$PSCRIPTPATH"/package.json "$MYDIR"/package.json
 cd "$MYDIR" && git add . && git commit -m "Adds Tiansu front-end configuration"
 
 # Installations
+mix deps.get
 mix ecto.create
 mix ecto.migrate
 npm install
