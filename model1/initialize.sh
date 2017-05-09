@@ -39,8 +39,8 @@ npm install
 
 # Add ex_admin dependency
 # TODO: {:ex_admin, "~> 0.8"} with override
-sed -i  '' 's/}]/},\
-   	  {:ex_admin, github: "smpallen99/ex_admin"}]/g' "$MYDIR"/mix.exs
+sed -i  '' 's|}]|},\
+   	 {:ex_admin, github: "smpallen99/ex_admin"}]|g' "$MYDIR"/mix.exs
 
 # Add ex_admin config
 echo "" >> "$MYDIR"/config/config.exs
@@ -72,7 +72,8 @@ sed -i '' '2s|$|\
 sed -i '' '2s|$|\
   use Scrivener, page_size: 10|g' "$MYDIR"/lib/"$LOWER"/repo.ex
 
-# Add brunch-config.js  
+# Add brunch-config.js
+subl "$MYDIR"
 echo "Now it's time to fix brunch-config.js"
 echo "Open brunch-config.js and apply the changes at the bottom"
 echo "Are you finished? [Yes|No]"
