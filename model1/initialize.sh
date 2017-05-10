@@ -106,6 +106,11 @@ echo "|> ${UPPER}.Repo.insert!" >> "$MYDIR"/priv/repo/seeds.exs
 mix ecto.migrate
 mix run "$MYDIR"/priv/repo/seeds.exs
 
+sed -i '' '44s|$|\
+    resources "/posts", '"${UPPER}"'.PostController|g' "$MYDIR"/web/router.ex
+
+sed -i '' '30d' "$MYDIR"/web/router.ex
+
 iex -S mix phoenix.server
 
 # # Add ex_admin dependency
