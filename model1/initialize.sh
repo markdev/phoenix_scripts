@@ -3,7 +3,7 @@
 # Must start at the initialize directory
 cd ../..
 
-# # Set script variables
+# Set script variables
 MYDIR=$(pwd)
 PSCRIPTPATH=$(echo "$MYDIR"/phoenix_scripts/model1)
 
@@ -12,6 +12,7 @@ LOWER=$(echo $SEDSTRONE | awk -F ':|,' '{print $2}')
 
 SEDSTRTWO=$(sed '33q;d' web/web.ex) 
 UPPER=$(echo $SEDSTRTWO | awk -F 'alias|Repo' '{print $2}' | sed 's/.$//')
+
 
 # Hide phoenix_scripts
 echo "" >> .gitignore
@@ -38,51 +39,120 @@ mix ecto.create
 mix ecto.migrate
 npm install
 
-# Add ex_admin dependency
-# TODO: {:ex_admin, "~> 0.8"} with override
-sed -i  '' 's|}]|},\
-   	 {:ex_admin, github: "smpallen99/ex_admin"}]|g' "$MYDIR"/mix.exs
 
-# Add ex_admin config
-echo "" >> "$MYDIR"/config/config.exs
-echo "config :ex_admin," >> "$MYDIR"/config/config.exs
-echo "repo: $UPPER.Repo," >> "$MYDIR"/config/config.exs
-echo "module: $UPPER," >> "$MYDIR"/config/config.exs    
-echo "modules: [" >> "$MYDIR"/config/config.exs
-echo "  $UPPER.ExAdmin.Dashboard," >> "$MYDIR"/config/config.exs
-echo "]" >> "$MYDIR"/config/config.exs
+########################
+# Including this to test coherence
+# TODO remove from final script
+mix phoenix.gen.html Post posts title:string body:text
 
-# Install ex_admin
-mix do deps.get, deps.compile
-mix admin.install
-git add . && git commit -m "installs ex_admin"
-
-# Add ex_admin routes
-sed -i '' '21s|$|\
-  # your apps routes\
-  scope "/admin", ExAdmin do\
-    pipe_through :browser\
+sed -i '' '17s|$|\
 \
-    admin_routes()\
+    resources "/posts", PostController|g' "$MYDIR"/web/router.ex
+
+mix ecto.migrate
+########################
+
+
+# Add coherence dependency
+sed -i  '' 's|}]|},\
+   	 {:coherence, "~> 0.3"}]|g' "$MYDIR"/mix.exs
+
+sed -i  '' '22s|]]|, :coherence]]|g' "$MYDIR"/mix.exs
+
+mix deps.get
+mix coherence.install --full --rememberable --invitable --trackable
+
+
+# Add to web/router.ex
+sed -i '' '23s|$|\
+  # Add this block\
+  scope "/" do\
+    pipe_through :browser\
+    coherence_routes\
+  end\
+\
+  # Add this block\
+  scope "/" do\
+    pipe_through :protected\
+    coherence_routes :protected\
   end|g' "$MYDIR"/web/router.ex
 
+sed -i '' '11s|$|\
+  pipeline :protected do\
+    plug :accepts, ["html"]\
+    plug :fetch_session\
+    plug :fetch_flash\
+    plug :protect_from_forgery\
+    plug :put_secure_browser_headers\
+    plug Coherence.Authentication.Session, protected: true\
+  end\
+|g' "$MYDIR"/web/router.ex
+
+sed -i '' '9s|$|\
+    plug Coherence.Authentication.Session  # Add this|g' "$MYDIR"/web/router.ex
+
 sed -i '' '2s|$|\
-  use ExAdmin.Router|g' "$MYDIR"/web/router.ex
+  use Coherence.Router|g' "$MYDIR"/web/router.ex
 
-# Add ex_admin paging configuration
-sed -i '' '2s|$|\
-  use Scrivener, page_size: 10|g' "$MYDIR"/lib/"$LOWER"/repo.ex
 
-# Add brunch-config.js
-subl "$MYDIR"
-echo "Now it's time to fix brunch-config.js"
-echo "Open brunch-config.js and apply the changes at the bottom"
-echo "Are you finished? [Yes|No]"
-read FINISHED
+# Add User Seeds
+echo "" >> "$MYDIR"/priv/repo/seeds.exs
+echo "${UPPER}.Repo.delete_all ${UPPER}.User" >> "$MYDIR"/priv/repo/seeds.exs
+echo "" >> "$MYDIR"/priv/repo/seeds.exs
+echo "${UPPER}.User.changeset(%${UPPER}.User{}, %{name: \"Mark\", email: \"mark@end2endsites.com\", password: \"buddha83\", password_confirmation: \"buddha83\"})" >> "$MYDIR"/priv/repo/seeds.exs  
+echo "|> ${UPPER}.Repo.insert!" >> "$MYDIR"/priv/repo/seeds.exs
 
-# launch server
-echo "Ok, now let's test it!"
+# Migrate and run
+mix ecto.migrate
+mix run "$MYDIR"/priv/repo/seeds.exs
+
 iex -S mix phoenix.server
+
+# # Add ex_admin dependency
+# # TODO: {:ex_admin, "~> 0.8"} with override
+# sed -i  '' 's|}]|},\
+#    	 {:ex_admin, github: "smpallen99/ex_admin"}]|g' "$MYDIR"/mix.exs
+
+# # Add ex_admin config
+# echo "" >> "$MYDIR"/config/config.exs
+# echo "config :ex_admin," >> "$MYDIR"/config/config.exs
+# echo "repo: $UPPER.Repo," >> "$MYDIR"/config/config.exs
+# echo "module: $UPPER," >> "$MYDIR"/config/config.exs    
+# echo "modules: [" >> "$MYDIR"/config/config.exs
+# echo "  $UPPER.ExAdmin.Dashboard," >> "$MYDIR"/config/config.exs
+# echo "]" >> "$MYDIR"/config/config.exs
+
+# # Install ex_admin
+# mix do deps.get, deps.compile
+# mix admin.install
+# git add . && git commit -m "installs ex_admin"
+
+# # Add ex_admin routes
+# sed -i '' '21s|$|\
+#   # your apps routes\
+#   scope "/admin", ExAdmin do\
+#     pipe_through :browser\
+# \
+#     admin_routes()\
+#   end|g' "$MYDIR"/web/router.ex
+
+# sed -i '' '2s|$|\
+#   use ExAdmin.Router|g' "$MYDIR"/web/router.ex
+
+# # Add ex_admin paging configuration
+# sed -i '' '2s|$|\
+#   use Scrivener, page_size: 10|g' "$MYDIR"/lib/"$LOWER"/repo.ex
+
+# # Add brunch-config.js
+# subl "$MYDIR"
+# echo "Now it's time to fix brunch-config.js"
+# echo "Open brunch-config.js and apply the changes at the bottom"
+# echo "Are you finished? [Yes|No]"
+# read FINISHED
+
+# # launch server
+# echo "Ok, now let's test it!"
+# iex -S mix phoenix.server
 
 
 
