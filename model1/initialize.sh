@@ -174,7 +174,16 @@ sed -i '' '23s|$|\
 
 
 # launch server
-iex -S mix phoenix.server
+# iex -S mix phoenix.server
+
+#######################
+# Creating a bullshit authorization system
+# TODO: Replace with Canary or something
+
+#mix ecto.gen.migration add_admin_field_to_user
+# create migration, add :admin, :boolean, default: false
+# configure seeds, one admin, one not
+
 
 
 
