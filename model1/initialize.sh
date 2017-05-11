@@ -180,15 +180,52 @@ sed -i '' '23s|$|\
 # Creating a bullshit authorization system
 # TODO: Replace with Canary or something
 
-#mix ecto.gen.migration add_admin_field_to_user
+mix ecto.gen.migration add_admin_field_to_user
 # create migration, add :admin, :boolean, default: false
 # configure seeds, one admin, one not
+sed -i '' '4s|$|\
+    alter table(:users, primary_key: false) do\
+      add :admin, :boolean, default: false\
+    end|g' "$MYDIR"/$(find priv/repo/migrations/ -name "*add_admin_field_to_user*")
+
+mix ecto.migrate
+
+cp "$PSCRIPTPATH"/priv/repo/seeds.exs  "$MYDIR"/priv/repo/seeds.exs
+sed -i '' "s|MyApplication|${UPPER}|g" "$MYDIR"/priv/repo/seeds.exs
+
+mix run "$MYDIR"/priv/repo/seeds.exs
 
 
 
+# Meh?  Why not
+# TODO: try without this
+mix do ecto.drop, ecto.setup
 
+mkdir -p "$MYDIR"/lib/"$LOWER"/plugs
 
+cp "$PSCRIPTPATH"/lib/my_application/plugs/authorized.ex "$MYDIR"/lib/"$LOWER"/plugs/authorized.ex
 
+sed -i '' "s|MyApplication|${UPPER}|g" "$MYDIR"/lib/"$LOWER"/plugs/authorized.ex
+
+sed -i '' "44s|$| :protected_admin|g" "$MYDIR"/web/router.ex
+sed -i '' "43s|:browser|:protected_admin|g" "$MYDIR"/web/router.ex
+
+sed -i '' "25s|:protected|:protected_admin|g" "$MYDIR"/web/router.ex
+
+sed -i '' '22s|$|\
+\
+  pipeline :protected_admin do\
+    plug :accepts, ["html"]\
+    plug :fetch_session\
+    plug :fetch_flash\
+    plug :protect_from_forgery\
+    plug :put_secure_browser_headers\
+    plug Coherence.Authentication.Session, protected: true\
+    plug '"$UPPER"'.Plugs.Authorized\
+  end\
+|g' "$MYDIR"/web/router.ex
+
+echo "LOTS OF THINGS TO FIX, BEING HERE"
 
 
 # Here shall go the users and user auth
