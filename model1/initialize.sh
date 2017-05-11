@@ -113,56 +113,75 @@ sed -i '' '30d' "$MYDIR"/web/router.ex
 
 iex -S mix phoenix.server
 
-# # Add ex_admin dependency
-# # TODO: {:ex_admin, "~> 0.8"} with override
-# sed -i  '' 's|}]|},\
-#    	 {:ex_admin, github: "smpallen99/ex_admin"}]|g' "$MYDIR"/mix.exs
+# Add ex_admin dependency
+# TODO: {:ex_admin, "~> 0.8"} with override
+sed -i  '' 's|}]|},\
+   	 {:ex_admin, github: "smpallen99/ex_admin"}]|g' "$MYDIR"/mix.exs
 
-# # Add ex_admin config
-# echo "" >> "$MYDIR"/config/config.exs
-# echo "config :ex_admin," >> "$MYDIR"/config/config.exs
-# echo "repo: $UPPER.Repo," >> "$MYDIR"/config/config.exs
-# echo "module: $UPPER," >> "$MYDIR"/config/config.exs    
-# echo "modules: [" >> "$MYDIR"/config/config.exs
-# echo "  $UPPER.ExAdmin.Dashboard," >> "$MYDIR"/config/config.exs
-# echo "]" >> "$MYDIR"/config/config.exs
+# Add ex_admin config
+echo "" >> "$MYDIR"/config/config.exs
+echo "config :ex_admin," >> "$MYDIR"/config/config.exs
+echo "repo: $UPPER.Repo," >> "$MYDIR"/config/config.exs
+echo "module: $UPPER," >> "$MYDIR"/config/config.exs    
+echo "modules: [" >> "$MYDIR"/config/config.exs
+echo "  $UPPER.ExAdmin.Dashboard," >> "$MYDIR"/config/config.exs
+echo "]" >> "$MYDIR"/config/config.exs
 
-# # Install ex_admin
-# mix do deps.get, deps.compile
-# mix admin.install
-# git add . && git commit -m "installs ex_admin"
+# Install ex_admin
+mix do deps.get, deps.compile
+mix admin.install
+git add . && git commit -m "installs ex_admin"
 
-# # Add ex_admin routes
-# sed -i '' '21s|$|\
-#   # your apps routes\
-#   scope "/admin", ExAdmin do\
-#     pipe_through :browser\
-# \
-#     admin_routes()\
-#   end|g' "$MYDIR"/web/router.ex
+# Add ex_admin routes
+sed -i '' '21s|$|\
+  # your apps routes\
+  scope "/admin", ExAdmin do\
+    pipe_through :browser\
+\
+    admin_routes()\
+  end|g' "$MYDIR"/web/router.ex
 
-# sed -i '' '2s|$|\
-#   use ExAdmin.Router|g' "$MYDIR"/web/router.ex
+sed -i '' '2s|$|\
+  use ExAdmin.Router|g' "$MYDIR"/web/router.ex
 
-# # Add ex_admin paging configuration
-# sed -i '' '2s|$|\
-#   use Scrivener, page_size: 10|g' "$MYDIR"/lib/"$LOWER"/repo.ex
+# Add ex_admin paging configuration
+sed -i '' '2s|$|\
+  use Scrivener, page_size: 10|g' "$MYDIR"/lib/"$LOWER"/repo.ex
 
-# # Add brunch-config.js
-# subl "$MYDIR"
-# echo "Now it's time to fix brunch-config.js"
-# echo "Open brunch-config.js and apply the changes at the bottom"
-# echo "Are you finished? [Yes|No]"
-# read FINISHED
-
-# # launch server
-# echo "Ok, now let's test it!"
-# iex -S mix phoenix.server
+# launch server
+iex -S mix phoenix.server
 
 
+#####################
+# Add User to ex_admin 
 
-# # Here shall go the users and user auth
+mix admin.gen.resource User
 
-# # email
+sed -i '' '48s|$|\
+  '"${UPPER}"'.ExAdmin.User|g' "$MYDIR"/config/config.exs
 
-# # avatar/ex_aws
+cp "$PSCRIPTPATH"/web/admin/user.ex  "$MYDIR"/web/admin/user.ex
+
+sed -i '' "s|MyApplication|${UPPER}|g" "$MYDIR"/web/admin/user.ex
+
+sed -i '' "24,28d" "$MYDIR"/web/router.ex
+
+sed -i '' '23s|$|\
+  scope "/admin", ExAdmin do\
+    pipe_through :protected\
+    admin_routes\
+  end\
+|g' "$MYDIR"/web/router.ex
+
+
+
+
+
+
+
+
+# Here shall go the users and user auth
+
+# email
+
+# avatar/ex_aws
