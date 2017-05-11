@@ -1,7 +1,7 @@
-defmodule YourApp.ExAdmin.User do
+defmodule MyApplication.ExAdmin.User do
   use ExAdmin.Register
 
-  register_resource YourApp.User do
+  register_resource MyApplication.User do
     index do
       selectable_column
 

@@ -111,7 +111,7 @@ sed -i '' '44s|$|\
 
 sed -i '' '30d' "$MYDIR"/web/router.ex
 
-iex -S mix phoenix.server
+#iex -S mix phoenix.server
 
 # Add ex_admin dependency
 # TODO: {:ex_admin, "~> 0.8"} with override
@@ -148,8 +148,6 @@ sed -i '' '2s|$|\
 sed -i '' '2s|$|\
   use Scrivener, page_size: 10|g' "$MYDIR"/lib/"$LOWER"/repo.ex
 
-# launch server
-iex -S mix phoenix.server
 
 
 #####################
@@ -173,6 +171,10 @@ sed -i '' '23s|$|\
   end\
 |g' "$MYDIR"/web/router.ex
 
+
+
+# launch server
+iex -S mix phoenix.server
 
 
 
