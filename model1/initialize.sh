@@ -195,37 +195,38 @@ sed -i '' "s|MyApplication|${UPPER}|g" "$MYDIR"/priv/repo/seeds.exs
 
 mix run "$MYDIR"/priv/repo/seeds.exs
 
+iex -S mix phoenix.server
 
 
 # Meh?  Why not
 # TODO: try without this
-mix do ecto.drop, ecto.setup
+# mix do ecto.drop, ecto.setup
 
-mkdir -p "$MYDIR"/lib/"$LOWER"/plugs
+# mkdir -p "$MYDIR"/lib/"$LOWER"/plugs
 
-cp "$PSCRIPTPATH"/lib/my_application/plugs/authorized.ex "$MYDIR"/lib/"$LOWER"/plugs/authorized.ex
+# cp "$PSCRIPTPATH"/lib/my_application/plugs/authorized.ex "$MYDIR"/lib/"$LOWER"/plugs/authorized.ex
 
-sed -i '' "s|MyApplication|${UPPER}|g" "$MYDIR"/lib/"$LOWER"/plugs/authorized.ex
+# sed -i '' "s|MyApplication|${UPPER}|g" "$MYDIR"/lib/"$LOWER"/plugs/authorized.ex
 
-sed -i '' "44s|$| :protected_admin|g" "$MYDIR"/web/router.ex
-sed -i '' "43s|:browser|:protected_admin|g" "$MYDIR"/web/router.ex
+# sed -i '' "44s|$| :protected_admin|g" "$MYDIR"/web/router.ex
+# sed -i '' "43s|:browser|:protected_admin|g" "$MYDIR"/web/router.ex
 
-sed -i '' "25s|:protected|:protected_admin|g" "$MYDIR"/web/router.ex
+# sed -i '' "25s|:protected|:protected_admin|g" "$MYDIR"/web/router.ex
 
-sed -i '' '22s|$|\
-\
-  pipeline :protected_admin do\
-    plug :accepts, ["html"]\
-    plug :fetch_session\
-    plug :fetch_flash\
-    plug :protect_from_forgery\
-    plug :put_secure_browser_headers\
-    plug Coherence.Authentication.Session, protected: true\
-    plug '"$UPPER"'.Plugs.Authorized\
-  end\
-|g' "$MYDIR"/web/router.ex
+# sed -i '' '22s|$|\
+# \
+#   pipeline :protected_admin do\
+#     plug :accepts, ["html"]\
+#     plug :fetch_session\
+#     plug :fetch_flash\
+#     plug :protect_from_forgery\
+#     plug :put_secure_browser_headers\
+#     plug Coherence.Authentication.Session, protected: true\
+#     plug '"$UPPER"'.Plugs.Authorized\
+#   end\
+# |g' "$MYDIR"/web/router.ex
 
-echo "LOTS OF THINGS TO FIX, BEING HERE"
+# echo "LOTS OF THINGS TO FIX, BEING HERE"
 
 
 # Here shall go the users and user auth

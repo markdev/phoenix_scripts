@@ -35,7 +35,9 @@ echo "created Procfile";
 
 # Create elixir_buildpack
 touch "$MYDIR"/elixir_buildpack.config
-echo "config_vars_to_export=(MY_VAR)" > Procfile
+echo "config_vars_to_export=(MY_VAR)" > elixir_buildpack.config
+echo "elixir_version=1.3.2" >> elixir_buildpack.config
+echo "always_rebuild=true" >> elixir_buildpack.config
 echo "created elixir_buildpack";
 
 # Add socket timeout
